@@ -1,14 +1,5 @@
 import paho.mqtt.client as mqtt
 
-print("Initialisation du service 1")
-client = mqtt.Client("service1")
-client.connect("localhost")
-client.subscribe("/sensors/temp")
-client.on_message = on_message
-
-buffer = []
-seuil = 30
-
 def on_message(client, userdata, message):
     if message.topic == "/sensors/temp":
         if len(buffer) > seuil:
@@ -22,5 +13,15 @@ def traitement(donnees):
     # thomas à toi de jouer
     pass
 
-while True:
-    pass
+if __name__ == "__main__":
+    print("Initialisation du service 1")
+    
+    client = mqtt.Client("service1")
+    client.on_message = on_message
+    client.connect("localhost")
+    client.subscribe("/sensors/temp")
+
+    buffer = []
+    seuil = 30
+
+    client.loop_start()
