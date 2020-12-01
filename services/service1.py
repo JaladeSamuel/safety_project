@@ -1,4 +1,5 @@
 import paho.mqtt.client as mqtt
+import numpy as np 
 
 buffer = []
 seuil = 30
@@ -18,7 +19,7 @@ def on_message(client, userdata, message):
     pass
 
 
-def traitement(donnees,number_of_point_median_filter,number_of_point_smooth):
+def traitement(donnees,number_of_point_median_filter=3,number_of_point_smooth=4):
     """
     Applied a median filter to the function to reduce the noise. Then smooth the potential function to avoid noise by computing the mean of number_of_point_smooth for every value.
 
