@@ -1,6 +1,5 @@
 import sys
 import time
-import numpy as np
 from capteur.capteur import capteur
 import paho.mqtt.publish as publish
 
