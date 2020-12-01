@@ -12,6 +12,8 @@ class capteur :
 		if (self.failrate*random.random_sample() < 0.5):
 			temp = 10 * (self.failrate + random.random_sample())
 		return temp
+	def get_failrate(self):
+		return self.failrate
 		
 def main(args):
 	print(capteur(.9).get_temp())
