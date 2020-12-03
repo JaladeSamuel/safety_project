@@ -3,8 +3,7 @@ import numpy as np
 
 buffer = []
 seuil = 30
-number_of_point_median_filter = 3
-number_of_point_smooth = 4
+
 
 def on_message(client, userdata, message):
     global buffer
