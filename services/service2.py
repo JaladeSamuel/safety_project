@@ -43,5 +43,4 @@ if __name__ == "__main__":
         if not flag_check:
             #service1 down
             print("service1 down")
-            exit()
         print("service1 up")
