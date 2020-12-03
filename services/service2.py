@@ -124,7 +124,7 @@ if __name__ == "__main__":
         if not service2_launched:
             flag_check = False
             client.publish("service2/fail_req")
-            time.sleep(2)
+            time.sleep(0.5)
             if not flag_check:
                 #service1 down
                 print("service1 down")
