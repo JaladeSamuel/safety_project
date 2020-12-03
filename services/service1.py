@@ -6,16 +6,19 @@ seuil = 30
 
 client = mqtt.Client("service1")
 
+
 def on_message(client, userdata, message):
+    global buffer
+
     if message.topic == "capteur/temp":
         if len(buffer) > seuil:
-            print("Buffer rempli : " + str(buffer))
-            traitement(buffer)
+            result = traitement(buffer)
+            print("Buffer rempli : " + str(buffer) + " ==> " + str(result))
             buffer = []
         
-        buffer.append(message.payload.decode("utf-8"))
-    elif message.topic == "fail_req":
-        client.publish("fail_ack", "yes")
+        buffer.append(float(message.payload.decode("utf-8")))
+    elif message.topic == "service2/fail_req":
+        client.publish("service1/fail_ack", "yes")
 
 
 def traitement(donnees,number_of_point_median_filter=3,number_of_point_smooth=4):
@@ -70,6 +73,7 @@ if __name__ == "__main__":
     client.on_message = on_message
     client.connect("localhost")
     client.subscribe("capteur/temp")
+    client.subscribe("service2/fail_req")
     client.loop_start()
 
     while True:
