@@ -66,12 +66,12 @@ data[150] = 10000
 data[151] = 10000
 print("%.3f"%make_function_smooth(data,5,7))
 
-print("\nTest avec des listes croissantes. On doit avoir un résultat proche de 100.5")
+print("\nTest avec des listes croissantes (fonction carré). On doit avoir un résultat proche de 13429.5")
 data = []
 data_clean = []
 for i in range(200):
-    data.append(i + float(np.random.random_sample(1)))
-    data_clean.append(i)
+    data.append(i*i + float(np.random.random_sample(1)))
+    data_clean.append(i*i)
 print("Test 1 : liste peu bruitée sans valeur abhérente.")
 print("%.3f"%make_function_smooth(data_clean,3,4))
 
