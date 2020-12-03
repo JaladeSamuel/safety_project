@@ -18,8 +18,7 @@ class capteur :
 
 	def publish(self):
 		while(1):
-			temp  = capteur(0.7).get_temp()
-			publish.single("capteur/temp", str(temp), hostname="localhost")
+			publish.single("capteur/temp", str(self.get_temp()), hostname="localhost")
 			time.sleep(.100)
 		
 def main(args):
