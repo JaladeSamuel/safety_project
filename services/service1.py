@@ -1,5 +1,7 @@
 import paho.mqtt.client as mqtt
 import numpy as np 
+from datetime import datetime
+
 
 buffer = []
 seuil = 30
@@ -13,7 +15,9 @@ def on_message(client, userdata, message):
     if message.topic == "capteur/temp":
         if len(buffer) > seuil:
             result = traitement(buffer)
-            print("Buffer rempli : " + str(buffer) + " ==> " + str(result))
+            data = "Buffer rempli : " + str(buffer) + " ==> " + str(result)
+            print(data)
+            save_historique(data)
             buffer = []
         
         buffer.append(float(message.payload.decode("utf-8")))
@@ -66,6 +70,24 @@ def traitement(donnees,number_of_point_median_filter=3,number_of_point_smooth=4)
        
     return np.mean(potential_channel)
     
+def save_historique(data,path="./data/historique.txt"):
+    """
+    Save in the historique file the buffer, the output of the treatment and the date/time
+
+    Agrs :
+    data = a string which contains all the data (buffer, ...)
+    path = path to the historique file
+    """
+    historique = open(path,'a')
+
+    # get the date and hour
+    datetime_object = datetime.now()
+    historique.write(str(datetime_object)+"\n")
+    # save data in historique
+    historique.write(str(data))
+    historique.write("\n")
+
+    historique.close()
 
 if __name__ == "__main__":
     print("Initialisation du service 1")
