@@ -45,6 +45,7 @@ def launch_service2(client):
 
     print("Recovering service1 state...")
     state = int(read_state_service1()) #recovering
+    fill_buffer_from_checkpoint(state)
     print("State recovered : " + str(state))
 
     service2_launched = True
@@ -136,10 +137,34 @@ def read_state_service1(path="./state/service1_state.txt"):
 
     Args : path
     """
-    state_file = open(path,'r')
+    state_file = open(path, 'r')
     service1_state = state_file.readlines()[1]
     return service1_state
 
+def fill_buffer_from_checkpoint(checkpoint, path="./data/historique.txt"):
+    """
+    Fills the buffer with the values from the last checkpoint by reading the history.
+
+    Args: checkpoint = int, path = path to the history as string.
+    """
+    global buffer
+
+    buffer = []
+    historique = open(path, 'r')
+    lines = historique.readlines()
+
+    count = 1
+    need_to_append_to_buffer = False
+    # Strips the newline character
+    for line in lines:
+        count += 1
+        if count == checkpoint:
+            need_to_append_to_buffer = True
+        
+        if need_to_append_to_buffer:
+            buffer.append(float(line.strip()))
+        else:
+            _ = line.strip()
 
 if __name__ == "__main__":
     print("Initialisation du service 2")

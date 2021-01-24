@@ -3,31 +3,29 @@ import numpy as np
 import time
 from datetime import datetime
 
-
 buffer = []
 seuil = 30
+sensor_counter = 0
 state = 0 #State of this service (number of writings in the history file)
 
 def on_message(client, userdata, message):
-    global buffer
-    global state 
+    global buffer, state, sensor_counter
 
     if message.topic == "capteur/temp":
+        sensor_counter += 1
+
         if len(buffer) > seuil:  
             result = traitement(buffer)
             print("30 dernières valeurs : " + str(buffer) + " ==> " + str(result))
             buffer = []
+
+            state = sensor_counter
+            save_state(state)
+        
         buffer.append(float(message.payload.decode("utf-8")))
 
         data = float(message.payload.decode("utf-8"))
         save_historique(data)
-        state += 1
-        save_state(state)
-
-        
-    # elif message.topic == "service2/fail_req":
-    #     client.publish("service1/is_alive", "im_alive")
-
 
 def traitement(donnees,number_of_point_median_filter=3,number_of_point_smooth=4):
     """
