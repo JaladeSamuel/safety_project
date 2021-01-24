@@ -15,14 +15,16 @@ def on_message(client, userdata, message):
     if message.topic == "capteur/temp":
         if len(buffer) > seuil:  
             result = traitement(buffer)
-            data = "Buffer rempli : " + str(buffer) + " ==> " + str(result)
-            print(data)
-            save_historique(data)
-            state += 1
-            save_state(state)
+            print("30 dernières valeurs : " + str(buffer) + " ==> " + str(result))
             buffer = []
-        
         buffer.append(float(message.payload.decode("utf-8")))
+
+        data = float(message.payload.decode("utf-8"))
+        save_historique(data)
+        state += 1
+        save_state(state)
+
+        
     # elif message.topic == "service2/fail_req":
     #     client.publish("service1/is_alive", "im_alive")
 
@@ -99,7 +101,7 @@ def save_state(sate,path="./state/service1_state.txt"):
     state = a variable that represent the symbolic state of the current service (number of writings in the history file)
     path = path to the state file
     """
-    state_file = open(path,'w')
+    state_file = open(path,'a')
 
     # get the date and hour
     datetime_object = datetime.now()

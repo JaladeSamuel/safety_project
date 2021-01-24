@@ -19,24 +19,24 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("fail_ack")
 
 # The callback for when a PUBLISH message is received from the server.
-def on_message(client, userdata, msg):
+def on_message(client, userdata, message):
     global buffer
     global flag_check
     global service2_launched
     global state 
     
     if service2_launched:
-        if msg.topic == "capteur/temp":
-            if len(buffer) > seuil:
+        if message.topic == "capteur/temp":
+            if len(buffer) > seuil:  
                 result = traitement(buffer)
-                data = "Buffer rempli : " + str(buffer) + " ==> " + str(result)
-                print(data)
-                save_historique(data)
-                state += 1
-                save_state(state)
+                print("30 dernières valeurs : " + str(buffer) + " ==> " + str(result))
                 buffer = []
+            buffer.append(float(message.payload.decode("utf-8")))
             
-            buffer.append(float(msg.payload.decode("utf-8")))
+            data = float(message.payload.decode("utf-8"))
+            save_historique(data)
+            state += 1
+            save_state(state)
 
 def launch_service2(client):
     print("Launch service2")
