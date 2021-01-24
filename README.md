@@ -8,5 +8,5 @@ Vous avez besoin de :
     ```sudo apt-get install mosquitto```
 
 ## Lancer le programme: 
-Pour lancer l'application éxecutes le script start.sh : 
+Pour lancer l'application éxecutez le script start.sh : 
   ```./start.sh``` 
