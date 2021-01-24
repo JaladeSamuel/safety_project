@@ -105,10 +105,6 @@ def save_historique(data,path="./data/historique.txt"):
     path = path to the historique file
     """
     historique = open(path,'a')
-
-    # get the date and hour
-    datetime_object = datetime.now()
-    historique.write(str(datetime_object)+"\n")
     # save data in historique
     historique.write(str(data))
     historique.write("\n")
