@@ -9,10 +9,12 @@ class capteur :
 		self.failrate = failrate
 
 	def get_temp(self):
-		temp = -1
-		if (self.failrate*random.random_sample() < 0.5):
-			temp = 10 * (self.failrate + random.random_sample())
-		return temp
+		tmp = random.random_sample()
+        if (tmp+self.failrate < 1):
+            res = 19.5 + random.random_sample()
+        else:
+            res = -1
+        return res 
 	def get_failrate(self):
 		return self.failrate
 
