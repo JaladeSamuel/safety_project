@@ -82,7 +82,7 @@ def save_historique(data,path="./data/historique.txt"):
     data = a string which contains all the data (buffer, ...)
     path = path to the historique file
     """
-    historique = open(path,'a')
+    historique = open(path,'w')
 
     # get the date and hour
     datetime_object = datetime.now()
@@ -101,7 +101,7 @@ def save_state(sate,path="./state/service1_state.txt"):
     state = a variable that represent the symbolic state of the current service (number of writings in the history file)
     path = path to the state file
     """
-    state_file = open(path,'a')
+    state_file = open(path,'w')
 
     # get the date and hour
     datetime_object = datetime.now()
