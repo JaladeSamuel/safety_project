@@ -6,19 +6,20 @@ from datetime import datetime
 
 buffer = []
 seuil = 30
-
-client = mqtt.Client("service1")
-
+state = 0 #State of this service (number of writings in the history file)
 
 def on_message(client, userdata, message):
     global buffer
+    global state 
 
     if message.topic == "capteur/temp":
-        if len(buffer) > seuil:
+        if len(buffer) > seuil:  
             result = traitement(buffer)
             data = "Buffer rempli : " + str(buffer) + " ==> " + str(result)
             print(data)
             save_historique(data)
+            state += 1
+            save_state(state)
             buffer = []
         
         buffer.append(float(message.payload.decode("utf-8")))
@@ -75,7 +76,7 @@ def save_historique(data,path="./data/historique.txt"):
     """
     Save in the historique file the buffer, the output of the treatment and the date/time
 
-    Agrs :
+    Args :
     data = a string which contains all the data (buffer, ...)
     path = path to the historique file
     """
@@ -90,8 +91,25 @@ def save_historique(data,path="./data/historique.txt"):
 
     historique.close()
 
+def save_state(sate,path="./state/service1_state.txt"):
+    """
+    Save in the state file the current sate of this service
+
+    Args :
+    state = a variable that represent the symbolic state of the current service (number of writings in the history file)
+    path = path to the state file
+    """
+    state_file = open(path,'w')
+
+    # get the date and hour
+    datetime_object = datetime.now()
+    # save data in historique
+    state_file.write(str(datetime_object) + "\n" + str(sate))
+    state_file.close()
+
 if __name__ == "__main__":
     print("Initialisation du service 1")
+    client = mqtt.Client("service1")
     client.publish("service1/is_alive", "im_alive")
     
     client.on_message = on_message

@@ -8,6 +8,7 @@ flag_check = False
 service2_launched = False
 buffer = []
 seuil = 30
+state = 0 #State of this service (updated at launch with the number of writings in the history file of the service1)
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
@@ -22,10 +23,7 @@ def on_message(client, userdata, msg):
     global buffer
     global flag_check
     global service2_launched
-    #print(msg.topic + " " + str(msg.payload.decode("utf-8")))
-    if msg.topic == "service1/fail_ack":
-        if str(msg.payload.decode("utf-8")) == "yes":
-            flag_check = True
+    global state 
     
     if service2_launched:
         if msg.topic == "capteur/temp":
@@ -34,13 +32,21 @@ def on_message(client, userdata, msg):
                 data = "Buffer rempli : " + str(buffer) + " ==> " + str(result)
                 print(data)
                 save_historique(data)
+                state += 1
+                save_state(state)
                 buffer = []
             
             buffer.append(float(msg.payload.decode("utf-8")))
 
-def launch_service2():
+def launch_service2(client):
     print("Launch service2")
     global service2_launched
+    global state
+
+    print("Recovering service1 state...")
+    state = int(read_state_service1()) #recovering
+    print("State recovered : " + str(state))
+
     service2_launched = True
     client.subscribe("capteur/temp")
 
@@ -108,16 +114,39 @@ def save_historique(data,path="./data/historique.txt"):
 
     historique.close()
 
-client = mqtt.Client("service2")
-client.on_connect = on_connect
-client.on_message = on_message
+def save_state(sate,path="./state/service2_state.txt"):
+    """
+    Save in the state file the current sate of this service
+
+    Args :
+    state = a variable that represent the symbolic state of the current service (number of writings in the history file)
+    path = path to the historique file
+    """
+    state_file = open(path,'w')
+
+    # get the date and hour
+    datetime_object = datetime.now()
+    # save data in historique
+    state_file.write(str(datetime_object) + "\n" + str(sate))
+    state_file.close()
+
+def read_state_service1(path="./state/service1_state.txt"):
+    """
+    Read the state of the service1
+
+    Args : path
+    """
+    state_file = open(path,'r')
+    service1_state = state_file.readlines()[1]
+    return service1_state
+
 
 if __name__ == "__main__":
     print("Initialisation du service 2")
-
+    client = mqtt.Client("service2")
+    client.on_connect = on_connect
+    client.on_message = on_message
     client.connect("localhost")
-    # client.subscribe("service1/fail_ack")
-    # time.sleep(2)
     client.loop_start()
 
     time.sleep(3)
@@ -136,4 +165,4 @@ if __name__ == "__main__":
             else:
                 #service1 down
                 print("service1 down")
-                launch_service2()
+                launch_service2(client)
