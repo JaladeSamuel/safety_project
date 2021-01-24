@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt
 import numpy as np 
+import time
 from datetime import datetime
 
 
@@ -21,8 +22,8 @@ def on_message(client, userdata, message):
             buffer = []
         
         buffer.append(float(message.payload.decode("utf-8")))
-    elif message.topic == "service2/fail_req":
-        client.publish("service1/fail_ack", "yes")
+    # elif message.topic == "service2/fail_req":
+    #     client.publish("service1/is_alive", "im_alive")
 
 
 def traitement(donnees,number_of_point_median_filter=3,number_of_point_smooth=4):
@@ -91,6 +92,7 @@ def save_historique(data,path="./data/historique.txt"):
 
 if __name__ == "__main__":
     print("Initialisation du service 1")
+    client.publish("service1/is_alive", "im_alive")
     
     client.on_message = on_message
     client.connect("localhost")
@@ -99,4 +101,5 @@ if __name__ == "__main__":
     client.loop_start()
 
     while True:
-        pass
+        time.sleep(0.5)
+        client.publish("service1/is_alive", "im_alive")

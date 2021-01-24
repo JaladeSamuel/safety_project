@@ -2,6 +2,7 @@ import paho.mqtt.client as mqtt
 import time
 import numpy as np 
 from datetime import datetime
+import watchdog
 
 flag_check = False
 service2_launched = False
@@ -115,19 +116,23 @@ if __name__ == "__main__":
     print("Initialisation du service 2")
 
     client.connect("localhost")
-    client.subscribe("service1/fail_ack")
-    time.sleep(2)
+    # client.subscribe("service1/fail_ack")
+    # time.sleep(2)
     client.loop_start()
 
+    time.sleep(3)
+
+    watch_dog_thread = watchdog.WatchThread(1)
+
     while True:
-        
         if not service2_launched:
-            flag_check = False
-            client.publish("service2/fail_req")
+            # flag_check = False
+            # client.publish("service2/fail_req")
             time.sleep(0.5)
-            if not flag_check:
+
+            if watch_dog_thread.is_service_up:
+                print("service1 up")
+            else:
                 #service1 down
                 print("service1 down")
                 launch_service2()
-            else: 
-                print("service1 up")
