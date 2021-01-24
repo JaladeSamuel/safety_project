@@ -4,7 +4,9 @@ Un service logiciel S acquiert des mesures au travers d’un capteur C. Le servi
 ## Requierements:
 Vous avez besoin de : 
   - Python 3
-  - Mosquitto (Broker MQTT) : `sudo apt-get install mosquitto
+  - Mosquitto (Broker MQTT) : 
+    ```sudo apt-get install mosquitto```
 
 ## Lancer le programme: 
-Pour lancer le script start.sh : `./start.sh 
+Pour lancer le script start.sh : 
+  ```./start.sh``` 
