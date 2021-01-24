@@ -123,6 +123,7 @@ if __name__ == "__main__":
     time.sleep(3)
 
     watch_dog_thread = watchdog.WatchThread(1)
+    watch_dog_thread.start()
 
     while True:
         if not service2_launched:

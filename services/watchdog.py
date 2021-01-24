@@ -12,6 +12,8 @@ class WatchThread(Thread):
             if msg.topic == self.topic and str(msg.payload.decode("utf-8")) == "im_alive":
                 self.message_count += 1
 
+        super(WatchThread, self).__init__()
+
         self.service_to_watch = service_to_watch
         self.sleep_time = sleep_time
         self.is_service_up = True
@@ -24,12 +26,13 @@ class WatchThread(Thread):
         self.client.connect("localhost")
         self.client.loop_start()
 
+        self._initialized = True
+
     def run(self):
         while True:
             last_message_count = self.message_count
             time.sleep(self.sleep_time)
 
-            print(last_message_count, "vs", self.message_count)
             if self.message_count > last_message_count:
                 self.is_service_up = True
             else:
