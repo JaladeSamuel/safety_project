@@ -3,12 +3,17 @@ import numpy as np
 import time
 from datetime import datetime
 
-buffer = []
-seuil = 30
-sensor_counter = 0
-state = 0 #State of this service (number of writings in the history file)
+buffer = [] # Buffer to process
+seuil = 30 # Maximum size of the buffer to process
+sensor_counter = 0 # Counts the number of inputs the sensor as given
+state = 0 # State of this service (last index of the processed sensor input)
 
 def on_message(client, userdata, message):
+    """
+    This function is called every time a message the client has subscribed to is received. 
+    Here we check for the message type, and process the data if necessary.
+    If the type is the sensor temperature, we append the value to our buffer and process it if it has reached the maximum size.
+    """
     global buffer, state, sensor_counter
 
     if message.topic == "capteur/temp":

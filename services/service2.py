@@ -4,24 +4,26 @@ import numpy as np
 from datetime import datetime
 import watchdog
 
-flag_check = False
 service2_launched = False
-buffer = []
-seuil = 30
-state = 0 #State of this service (updated at launch with the number of writings in the history file of the service1)
+buffer = [] # Buffer to process
+seuil = 30 # Maximum size of the buffer to process
+state = 0 # State of this service (last index of the processed sensor input and updated at launch with the number of writings in the history file of the service1)
 
-# The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
+    """
+    The callback for when the client receives a CONNACK response from the server.
+    """
     print("Service2 Connected with result code "+str(rc))
     print("Watching service1...")
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     client.subscribe("fail_ack")
 
-# The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, message):
+    """
+    The callback for when a PUBLISH message is received from the server.
+    """
     global buffer
-    global flag_check
     global service2_launched
     global state 
     
@@ -39,6 +41,9 @@ def on_message(client, userdata, message):
             save_state(state)
 
 def launch_service2(client):
+    """
+    Launches the service 2. It will fill the data with the method 'fill_buffer_from_checkpoint' from the checkpoint and continue processing the sensors data.
+    """
     print("Launch service2")
     global service2_launched
     global state
@@ -177,8 +182,6 @@ if __name__ == "__main__":
 
     while True:
         if not service2_launched:
-            # flag_check = False
-            # client.publish("service2/fail_req")
             time.sleep(0.5)
 
             if watch_dog_thread.is_service_up:
