@@ -6,6 +6,7 @@ Vous avez besoin de :
   - Python 3
   - Mosquitto (Broker MQTT) : 
     ```sudo apt-get install mosquitto```
+    ```pip3 install paho-mqtt```
 
 ## Lancer le programme: 
 Pour lancer l'application éxecutez le script start.sh : 
